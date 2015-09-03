@@ -57,3 +57,19 @@ Elasticsearch のインストールと同時に `plugin` コマンドが使え�
 プラグインの詳細はドキュメントを見る．
 
 * https://www.elastic.co/guide/en/elasticsearch/reference/current/modules-plugins.html
+
+### 起動してみる
+
+簡単に起動する！
+
+```
+➜  ~  elasticsearch
+（中略）
+[INFO ][node                     ] [Hellion] starting ...
+（中略）
+```
+
+豆知識だけど，Elasticsearch のクラスタ名は，デフォルトで Marvel のキャラクター名がランダムで選ばれる．
+皆さんのクラスタ名は何のキャラクターでしたか？
+
+* [Elasticsearch のクラスタ名と Marvel のキャラクター一覧を比較してみた - kakakakakku blog](http://kakakakakku.hatenablog.com/entry/2015/08/29/163518)
