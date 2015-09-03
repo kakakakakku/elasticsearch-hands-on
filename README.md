@@ -54,9 +54,19 @@ Elasticsearch のインストールと同時に `plugin` コマンドが使え�
 ➜  ~  plugin --install elasticsearch/elasticsearch-analysis-kuromoji/2.7.0
 ```
 
+正常にインストールされたことを確認する．
+
+```
+➜  ~  plugin -l
+Installed plugins:
+    - analysis-kuromoji
+    - head
+    - inquisitor
+```
+
 プラグインの詳細はドキュメントを見る．
 
-* https://www.elastic.co/guide/en/elasticsearch/reference/current/modules-plugins.html
+* [Plugins](https://www.elastic.co/guide/en/elasticsearch/reference/current/modules-plugins.html)
 
 ### 起動してみる
 
@@ -69,9 +79,15 @@ Elasticsearch のインストールと同時に `plugin` コマンドが使え�
 （中略）
 ```
 
+JSON が返ってくればちゃんと起動できている．
+
+```
+➜  ~  curl http://localhost:9200
+```
+
 豆知識だけど，Elasticsearch のクラスタ名は，デフォルトで Marvel のキャラクター名がランダムで選ばれる．
 
-皆さんのクラスタ名は何のキャラクターでしたか？
+皆さんのクラスタ名は何のキャラクターでした？
 
 * [Elasticsearch のクラスタ名と Marvel のキャラクター一覧を比較してみた - kakakakakku blog](http://kakakakakku.hatenablog.com/entry/2015/08/29/163518)
 
@@ -89,14 +105,61 @@ Elasticsearch のデータ構造を RDBMS で表現すると...っていう書�
 
 ## はじめての Elasticsearch
 
-まずは適当なデータを導入してみましょう．
+まずは適当なデータを投入してみましょう．
 
 WIP...
 
 ## Elasticsearch でレストランを検索しよう
 
-Livedoor 様が提供してるレストランデータを投入する．
+### データを落としてくる
 
 * [livedoor/datasets](https://github.com/livedoor/datasets)
 
-WIP...
+Livedoor 様が提供してるレストランデータを活用するので， まず任意のディレクトリにデータを落としてくる．
+
+`.tar.gz` を展開すると複数のファイルが出てくるけど，今回は `restaurants.csv` だけを使う．約20万以上のレストランが含まれている．
+
+```
+➜  github  git clone git@github.com:livedoor/datasets.git
+➜  github  cd datasets
+➜  datasets git:(master) ✗ tar xvf ldgourmet.tar.gz
+➜  datasets git:(master) ✗ ls -al restaurants.csv
+➜  datasets git:(master) ✗ wc -l restaurants.csv
+  214263 restaurants.csv
+```
+
+### データをコンバートする
+
+（ディレクトリ構造は各自違うので細かいところは任せる）
+
+ハンズオンリポジトリの `scripts` ディレクトリに用意しておいた Ruby スクリプトを `datasets` ディレクトリにコピーして実行する．
+
+結果として `bulk_restaurants.json` が生成されていれば正常にコンバートできている．
+
+```
+➜  datasets git:(master) ✗ cp -p ${GITHUB_DIR}/elasticsearch-hands-on/scripts/convert_bulk_data.rb .
+➜  datasets git:(master) ✗ ruby convert_bulk_data.rb
+（数分で実行完了になるはず）
+➜  datasets git:(master) ✗ ls -al bulk_restaurants.json
+```
+
+### インデックスを作成する
+
+コンバートしたデータを投入する前にインデックスを作成する．
+
+ハンズオンリポジトリの `mappgins` ディレクトリに用意しておいたマッピング定義をベースにインデックスを作成する．
+
+```
+➜  elasticsearch-hands-on git:(master) ✗ curl -X POST http://localhost:9200/gourmet -d @mappings/restaurants.json
+{"acknowledged":true}%
+```
+
+### Bulk API を使ってデータを投入する
+
+```
+➜  datasets git:(master) ✗ curl -X POST http://localhost:9200/_bulk --data-binary @bulk_restaurants.json
+```
+
+Bulk API の詳細はドキュメントを見る．
+
+* [Bulk API](https://www.elastic.co/guide/en/elasticsearch/reference/master/docs-bulk.html)

@@ -1,0 +1,225 @@
+{
+    "settings": {
+        "analysis": {
+            "filter": {
+                "pos_filter": {
+                    "type": "kuromoji_part_of_speech",
+                    "stoptags": [
+                        "助詞-格助詞-一般",
+                        "助詞-終助詞"
+                    ]
+                },
+                "greek_lowercase_filter": {
+                    "type": "lowercase",
+                    "language": "greek"
+                }
+            },
+            "tokenizer": {
+                "kuromoji": {
+                    "type": "kuromoji_tokenizer"
+                },
+                "ngram_tokenizer": {
+                    "type": "nGram",
+                    "min_gram": "2",
+                    "max_gram": "3",
+                    "token_chars": [
+                        "letter",
+                        "digit"
+                    ]
+                }
+            },
+            "analyzer": {
+                "kuromoji_analyzer": {
+                    "type": "custom",
+                    "tokenizer": "kuromoji",
+                    "filter": [
+                        "kuromoji_baseform",
+                        "pos_filter",
+                        "greek_lowercase_filter",
+                        "cjk_width"
+                    ]
+                },
+                "ngram_analyzer": {
+                    "tokenizer": "ngram_tokenizer"
+                }
+            }
+        }
+    },
+    "mappings": {
+        "restaurant": {
+            "_source": {
+                "enabled": true
+            },
+            "_all": {
+                "enabled": true,
+                "analyzer": "kuromoji_analyzer"
+            },
+            "properties": {
+                "id": {
+                    "type": "integer",
+                    "index": "not_analyzed"
+                },
+                "name": {
+                    "type": "string",
+                    "index": "analyzed",
+                    "analyzer": "ngram_analyzer"
+                },
+                "property": {
+                    "type": "string",
+                    "index": "analyzed",
+                    "analyzer": "ngram_analyzer"
+                },
+                "alphabet": {
+                    "type": "string",
+                    "index": "analyzed",
+                    "analyzer": "ngram_analyzer"
+                },
+                "name_kana": {
+                    "type": "string",
+                    "index": "analyzed",
+                    "analyzer": "ngram_analyzer"
+                },
+                "pref_id": {
+                    "type": "integer",
+                    "index": "not_analyzed"
+                },
+                "area_id": {
+                    "type": "integer",
+                    "index": "not_analyzed"
+                },
+                "station_id1": {
+                    "type": "integer",
+                    "index": "not_analyzed"
+                },
+                "station_time1": {
+                    "type": "integer",
+                    "index": "not_analyzed"
+                },
+                "station_distance1": {
+                    "type": "integer",
+                    "index": "not_analyzed"
+                },
+                "station_id2": {
+                    "type": "integer",
+                    "index": "not_analyzed"
+                },
+                "station_time2": {
+                    "type": "integer",
+                    "index": "not_analyzed"
+                },
+                "station_distance2": {
+                    "type": "integer",
+                    "index": "not_analyzed"
+                },
+                "station_id3": {
+                    "type": "integer",
+                    "index": "not_analyzed"
+                },
+                "station_time3": {
+                    "type": "integer",
+                    "index": "not_analyzed"
+                },
+                "station_distance3": {
+                    "type": "integer",
+                    "index": "not_analyzed"
+                },
+                "category_id1": {
+                    "type": "integer",
+                    "index": "not_analyzed"
+                },
+                "category_id2": {
+                    "type": "integer",
+                    "index": "not_analyzed"
+                },
+                "category_id3": {
+                    "type": "integer",
+                    "index": "not_analyzed"
+                },
+                "category_id4": {
+                    "type": "integer",
+                    "index": "not_analyzed"
+                },
+                "category_id5": {
+                    "type": "integer",
+                    "index": "not_analyzed"
+                },
+                "zip": {
+                    "type": "string",
+                    "index": "analyzed",
+                    "analyzer": "ngram_analyzer"
+                },
+                "address": {
+                    "type": "string",
+                    "index": "analyzed",
+                    "analyzer": "kuromoji_analyzer"
+                },
+                "north_latitude": {
+                    "type": "string",
+                    "index": "analyzed",
+                    "analyzer": "ngram_analyzer"
+                },
+                "east_longitude": {
+                    "type": "string",
+                    "index": "analyzed",
+                    "analyzer": "ngram_analyzer"
+                },
+                "description": {
+                    "type": "string",
+                    "index": "analyzed",
+                    "analyzer": "kuromoji_analyzer"
+                },
+                "purpose": {
+                    "type": "string",
+                    "index": "analyzed",
+                    "analyzer": "ngram_analyzer"
+                },
+                "open_morning": {
+                    "type": "integer",
+                    "index": "not_analyzed"
+                },
+                "open_lunch": {
+                    "type": "integer",
+                    "index": "not_analyzed"
+                },
+                "open_late": {
+                    "type": "integer",
+                    "index": "not_analyzed"
+                },
+                "photo_count": {
+                    "type": "integer",
+                    "index": "not_analyzed"
+                },
+                "special_count": {
+                    "type": "integer",
+                    "index": "not_analyzed"
+                },
+                "menu_count": {
+                    "type": "integer",
+                    "index": "not_analyzed"
+                },
+                "fan_count": {
+                    "type": "integer",
+                    "index": "not_analyzed"
+                },
+                "access_count": {
+                    "type": "integer",
+                    "index": "not_analyzed"
+                },
+                "created_on": {
+                    "type": "string",
+                    "index": "analyzed",
+                    "analyzer": "ngram_analyzer"
+                },
+                "modified_on": {
+                    "type": "string",
+                    "index": "analyzed",
+                    "analyzer": "ngram_analyzer"
+                },
+                "closed": {
+                    "type": "integer",
+                    "index": "not_analyzed"
+                }
+            }
+        }
+    }
+}
