@@ -70,6 +70,33 @@ Elasticsearch のインストールと同時に `plugin` コマンドが使え�
 ```
 
 豆知識だけど，Elasticsearch のクラスタ名は，デフォルトで Marvel のキャラクター名がランダムで選ばれる．
+
 皆さんのクラスタ名は何のキャラクターでしたか？
 
 * [Elasticsearch のクラスタ名と Marvel のキャラクター一覧を比較してみた - kakakakakku blog](http://kakakakakku.hatenablog.com/entry/2015/08/29/163518)
+
+## Elasticsearch のデータ構造
+
+使う前に Elasticsearch のデータ構造を頭に入れておきましょう．
+
+Elasticsearch のデータ構造を RDBMS で表現すると...っていう書き方をよく見るけど，あえて言わないでおく．
+
+* クラスタ
+* ノード
+* インデックス
+* タイプ
+* フィールド
+
+## はじめての Elasticsearch
+
+まずは適当なデータを導入してみましょう．
+
+WIP...
+
+## Elasticsearch でレストランを検索しよう
+
+Livedoor 様が提供してるレストランデータを投入する．
+
+* [livedoor/datasets](https://github.com/livedoor/datasets)
+
+WIP...
