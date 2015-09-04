@@ -37,6 +37,26 @@ Elasticsearch 最高！と思えるキッカケ作りの場になれば良いな
 Version: 1.7.1, Build: b88f43f/2015-07-29T09:54:16Z, JVM: 1.8.0_20
 ```
 
+### HTTP で送る最大サイズを 200MB に拡大する
+
+`/usr/local/Cellar/elasticsearch/1.7.1/config/elasticsearch.yml` に定義されている `http.max_content_length` を修正する．
+
+* Before
+
+```
+#http.max_content_length: 100mb
+```
+
+* After
+
+```
+http.max_content_length: 200mb
+```
+
+設定の詳細はドキュメントを見る．
+
+* [HTTP](https://www.elastic.co/guide/en/elasticsearch/reference/master/modules-http.html)
+
 ### 主要なプラグインをインストールする
 
 Elasticsearch のインストールと同時に `plugin` コマンドが使えるようになっている．
@@ -85,11 +105,11 @@ JSON が返ってくればちゃんと起動できている．
 ➜  ~  curl http://localhost:9200
 ```
 
-豆知識だけど，Elasticsearch のクラスタ名は，デフォルトで Marvel のキャラクター名がランダムで選ばれる．
+豆知識だけど，Elasticsearch のノード名は，デフォルトで Marvel のキャラクター名がランダムで選ばれる．
 
-皆さんのクラスタ名は何のキャラクターでした？
+皆さんのノード名は何のキャラクターでした？
 
-* [Elasticsearch のクラスタ名と Marvel のキャラクター一覧を比較してみた - kakakakakku blog](http://kakakakakku.hatenablog.com/entry/2015/08/29/163518)
+* [Elasticsearch のノード名と Marvel のキャラクター一覧を比較してみた - kakakakakku blog](http://kakakakakku.hatenablog.com/entry/2015/08/29/163518)
 
 ## Elasticsearch のデータ構造
 
@@ -158,8 +178,11 @@ Livedoor 様が提供してるレストランデータを活用するので， �
 
 ```
 ➜  datasets git:(master) ✗ curl -X POST http://localhost:9200/_bulk --data-binary @bulk_restaurants.json
+（数分で実行完了になるはず）
 ```
 
 Bulk API の詳細はドキュメントを見る．
 
 * [Bulk API](https://www.elastic.co/guide/en/elasticsearch/reference/master/docs-bulk.html)
+
+### 検索してみよう
