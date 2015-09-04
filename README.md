@@ -1,6 +1,6 @@
 # elasticsearch-hands-on
 
-## キッカケ
+## 1. キッカケ
 
 Elasticsearch に興味はあるけど，今まで試したことがなかったというメンバーが結構いた．
 
@@ -8,11 +8,11 @@ Docker ハンズオンのときと同じく，教えられるほど詳しくは�
 
 Elasticsearch 最高！と思えるキッカケ作りの場になれば良いなと思っている．
 
-## 目的
+## 2. 目的
 
 実際に Elasticsearch にデータを投入して，クエリを投げながら理解を深める．
 
-## ゴール
+## 3. ゴール
 
 2時間で試せる内容として，今回のゴールを以下のように定める．
 
@@ -22,9 +22,9 @@ Elasticsearch 最高！と思えるキッカケ作りの場になれば良いな
 * データを投入できること
 * 自分の考えた通りのクエリを投げられること
 
-## 環境構築
+## 4. 環境構築
 
-### インストールする
+### 4-1. インストールする
 
 * brew
 * Docker
@@ -37,7 +37,7 @@ Elasticsearch 最高！と思えるキッカケ作りの場になれば良いな
 Version: 1.7.1, Build: b88f43f/2015-07-29T09:54:16Z, JVM: 1.8.0_20
 ```
 
-### HTTP で送る最大サイズを 200MB に拡大する
+### 4-2. HTTP で送る最大サイズを 200MB に拡大する
 
 `/usr/local/Cellar/elasticsearch/1.7.1/config/elasticsearch.yml` に定義されている `http.max_content_length` を修正する．
 
@@ -57,7 +57,7 @@ http.max_content_length: 200mb
 
 * [HTTP](https://www.elastic.co/guide/en/elasticsearch/reference/master/modules-http.html)
 
-### 主要なプラグインをインストールする
+### 4-3. 主要なプラグインをインストールする
 
 Elasticsearch のインストールと同時に `plugin` コマンドが使えるようになっている．
 
@@ -88,7 +88,7 @@ Installed plugins:
 
 * [Plugins](https://www.elastic.co/guide/en/elasticsearch/reference/current/modules-plugins.html)
 
-### 起動してみる
+### 4-4. 起動してみる
 
 簡単に起動する！
 
@@ -111,7 +111,7 @@ JSON が返ってくればちゃんと起動できている．
 
 * [Elasticsearch のノード名と Marvel のキャラクター一覧を比較してみた - kakakakakku blog](http://kakakakakku.hatenablog.com/entry/2015/08/29/163518)
 
-## Elasticsearch のデータ構造
+## 5. Elasticsearch のデータ構造
 
 使う前に Elasticsearch のデータ構造を頭に入れておきましょう．
 
@@ -123,15 +123,15 @@ Elasticsearch のデータ構造を RDBMS で表現すると...っていう書�
 * タイプ
 * フィールド
 
-## はじめての Elasticsearch
+## 6. はじめての Elasticsearch
 
 まずは適当なデータを投入してみましょう．
 
 WIP...
 
-## Elasticsearch でレストランを検索しよう
+## 7. Elasticsearch でレストランを検索しよう
 
-### データを落としてくる
+### 7-1. データを落としてくる
 
 * [livedoor/datasets](https://github.com/livedoor/datasets)
 
@@ -148,7 +148,7 @@ Livedoor 様が提供してるレストランデータを活用するので， �
   214263 restaurants.csv
 ```
 
-### データをコンバートする
+### 7-2. データをコンバートする
 
 （ディレクトリ構造は各自違うので細かいところは任せる）
 
@@ -163,7 +163,7 @@ Livedoor 様が提供してるレストランデータを活用するので， �
 ➜  datasets git:(master) ✗ ls -al bulk_restaurants.json
 ```
 
-### インデックスを作成する
+### 7-3. インデックスを作成する
 
 コンバートしたデータを投入する前にインデックスを作成する．
 
@@ -174,7 +174,7 @@ Livedoor 様が提供してるレストランデータを活用するので， �
 {"acknowledged":true}%
 ```
 
-### Bulk API を使ってデータを投入する
+### 7-4. Bulk API を使ってデータを投入する
 
 ```
 ➜  datasets git:(master) ✗ curl -X POST http://localhost:9200/_bulk --data-binary @bulk_restaurants.json
@@ -185,4 +185,4 @@ Bulk API の詳細はドキュメントを見る．
 
 * [Bulk API](https://www.elastic.co/guide/en/elasticsearch/reference/master/docs-bulk.html)
 
-### 検索してみよう
+### 7-5. 検索してみよう
