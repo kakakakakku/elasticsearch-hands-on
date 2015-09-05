@@ -265,3 +265,33 @@ Bulk API と cat APIs の詳細はドキュメントを見る．
 }
 '
 ```
+
+### 7-6. 複雑な検索をしてみよう
+
+More Like This Query を使うとレコメンデーションのように類似するドキュメントを検索することができます．
+
+詳細は割愛しますが，ドキュメントの中にある重要語を抽出して，その重要語を同じく持つドキュメントを近似するような実装になっています．
+
+重要語の判定は TF-IDF など昔から NLP の分野で使われている手法が実装されているはず（推測だけど）．
+
+今回はマークシティ勤務なら絶対1回は買ったことがあるであろう「和幸 (id: 363297)」をベースに類似店舗を出してみましょう．
+
+```
+{
+  "query": {
+    "more_like_this": {
+      "fields": ["name", "address", "description"],
+      "ids": ["363297"],
+      "min_term_freq": 1,
+      "min_doc_freq": 10,
+      "minimum_should_match": "70%"
+    }
+  }
+}
+```
+
+データセットの `description` にあまり文書が書かれてないため，驚くような結果が出ないはずです．さらに今回はあえて `address` も対象に含めてしまっているため，単純に「道玄坂」関連のレストランが出てくる可能性があります．
+
+More Like This Query の詳細はドキュメントを見る．
+
+* [More Like This Query](https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-mlt-query.html)
