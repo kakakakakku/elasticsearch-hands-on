@@ -125,9 +125,25 @@ Elasticsearch のデータ構造を RDBMS で表現すると...っていう書�
 
 ## 6. はじめての Elasticsearch
 
-まずは適当なデータを投入してみましょう．
+ブログ記事のドキュメントを投入する．
 
-WIP...
+```
+➜  ~  curl -X PUT http://localhost:9200/blog/articles/1 -d '
+{
+  "title": "Elasticsearch Hand-On",
+  "body": "Hello!",
+  "tags": ["elasticsearch", "handson"]
+}
+'
+```
+
+ドキュメントを抽出する．
+
+```
+➜  ~  curl http://localhost:9200/blog/articles/1
+```
+
+次から実践的に Elasticsearch を使っていく．
 
 ## 7. Elasticsearch でレストランを検索しよう
 
