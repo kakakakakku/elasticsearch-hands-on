@@ -322,3 +322,85 @@ More Like This Query の詳細はドキュメントを見る．
 }
 '
 ```
+
+## 9. 日本語処理に関して
+
+最後に日本語処理に関して簡単に説明します．
+
+日本語は英語と異なり単語間の区切り文字がないため，以下のような手法で文字列を分割していく必要があります．
+
+* N-Gram
+* 形態素解析
+
+（トークナイザーとアナライザーの説明は口頭でします）
+
+## 9-1. N-Gram
+
+シンプルに指定された文字数で分割して転置インデックスを構成する手法です．
+
+今回のマッピング設定では 2-Gram と 3-Gram の設定をしています．
+
+確認してみましょう．
+
+```
+➜  ~  curl -s http://localhost:9200/gourmet/_analyze\?tokenizer\=ngram_tokenizer\&pretty -d '東京都渋谷区で勤務しています' | grep '"token"'
+    "token" : "東京",
+    "token" : "東京都",
+    "token" : "京都",
+    "token" : "京都渋",
+    "token" : "都渋",
+    "token" : "都渋谷",
+    "token" : "渋谷",
+    "token" : "渋谷区",
+    "token" : "谷区",
+    "token" : "谷区で",
+    "token" : "区で",
+    "token" : "区で勤",
+    "token" : "で勤",
+    "token" : "で勤務",
+    "token" : "勤務",
+    "token" : "勤務し",
+    "token" : "務し",
+    "token" : "務して",
+    "token" : "して",
+    "token" : "してい",
+    "token" : "てい",
+    "token" : "ていま",
+    "token" : "いま",
+    "token" : "います",
+    "token" : "ます",
+```
+
+## 9-2. 形態素解析
+
+形態素解析では kuromoji を使っています．N-Gram で抽出された非実用的なフレーズが無くなります．
+
+確認してみましょう．
+
+```
+➜  ~  curl -s http://localhost:9200/gourmet/_analyze\?tokenizer\=kuromoji\&pretty -d '東京都渋谷区で勤務しています' | grep '"token"'
+    "token" : "東京",
+    "token" : "都",
+    "token" : "渋谷",
+    "token" : "区",
+    "token" : "で",
+    "token" : "勤務",
+    "token" : "し",
+    "token" : "て",
+    "token" : "い",
+    "token" : "ます",
+```
+
+さらに `kuromoji_baseform` を使うことで表記揺れの統一も意識せずインデックスすることができます．
+
+```
+➜  ~  curl -s http://localhost:9200/gourmet/_analyze\?analyzer\=kuromoji_analyzer\&pretty -d '飲み飲む飲もう' | grep '"token"'
+    "token" : "飲む",
+    "token" : "飲む",
+    "token" : "飲む",
+    "token" : "う",
+```
+
+実際にはもっと細かな設定をすることができます．
+
+N-Gram も形態素解析も一長一短があり，用途に応じて組み合わせて使うことがベストプラクティスなのかなと思ってます．
