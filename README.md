@@ -277,6 +277,7 @@ More Like This Query を使うとレコメンデーションのように類似�
 今回はマークシティ勤務なら絶対1回は買ったことがあるであろう「和幸 (id: 363297)」をベースに類似店舗を出してみましょう．
 
 ```
+➜  ~  curl http://localhost:9200/gourmet/restaurants/_search\?pretty -d '
 {
   "query": {
     "more_like_this": {
@@ -288,6 +289,7 @@ More Like This Query を使うとレコメンデーションのように類似�
     }
   }
 }
+'
 ```
 
 データセットの `description` にあまり文書が書かれてないため，驚くような結果が出ないはずです．さらに今回はあえて `address` も対象に含めてしまっているため，単純に「道玄坂」関連のレストランが出てくる可能性があります．
@@ -295,3 +297,28 @@ More Like This Query を使うとレコメンデーションのように類似�
 More Like This Query の詳細はドキュメントを見る．
 
 * [More Like This Query](https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-mlt-query.html)
+
+## 8. ハイライトを実現する
+
+検索サービスだと当たり前に実装されているハイライトを試してみましょう．
+
+今まで投げてきたクエリに `highlight` セクションを追加するだけで実現できます．
+
+```
+➜  ~  curl http://localhost:9200/gourmet/restaurants/_search\?pretty -d '
+{
+  "query": {
+    "multi_match": {
+      "fields": ["name", "address"],
+      "query": "焼肉 渋谷",
+      "operator": "and"
+    }
+  },
+  "highlight": {
+    "fields" : {
+      "name": {}
+    }
+  }
+}
+'
+```
