@@ -39,7 +39,9 @@ Version: 1.7.1, Build: b88f43f/2015-07-29T09:54:16Z, JVM: 1.8.0_20
 
 ### 4-2. HTTP で送る最大サイズを 200MB に拡大する
 
-`/usr/local/Cellar/elasticsearch/1.7.1/config/elasticsearch.yml` に定義されている `http.max_content_length` を修正する．
+（環境によってディレクトリが違うかもしれないけど）
+
+`/usr/local/Cellar/elasticsearch/1.7.1/config/elasticsearch.yml` に定義されている `http.max_content_length` を修正する．今回 Bulk API で投入するデータ量が 100MB 以上になるのでこの設定が必要になる．
 
 * Before
 
@@ -90,7 +92,7 @@ Installed plugins:
 
 ### 4-4. 起動してみる
 
-簡単に起動する！
+簡単に起動できる．
 
 ```
 ➜  ~  elasticsearch
@@ -105,23 +107,30 @@ JSON が返ってくればちゃんと起動できている．
 ➜  ~  curl http://localhost:9200
 ```
 
-豆知識だけど，Elasticsearch のノード名は，デフォルトで Marvel のキャラクター名がランダムで選ばれる．
+（豆知識として）
 
-皆さんのノード名は何のキャラクターでした？
+Elasticsearch のノード名はデフォルトで Marvel のキャラクター名がランダムで選ばれる．皆さんのノード名は何のキャラクターでした？
 
 * [Elasticsearch のノード名と Marvel のキャラクター一覧を比較してみた - kakakakakku blog](http://kakakakakku.hatenablog.com/entry/2015/08/29/163518)
 
 ## 5. Elasticsearch のデータ構造
 
-使う前に Elasticsearch のデータ構造を頭に入れておきましょう．
+使う前に Elasticsearch のデータ構造を頭に入れておく．
 
-Elasticsearch のデータ構造を RDBMS で表現すると...っていう書き方をよく見るけど，あえて言わないでおく．
+Elasticsearch のデータ構造を RDBMS で表現するとっていう書き方をよく見るが，本質的には違うものなので，言わないでおく．
+
+（口頭で説明する）
 
 * クラスタ
 * ノード
 * インデックス
 * タイプ
+* ドキュメント
 * フィールド
+
+データ構造の詳細はドキュメントを見る．
+
+* [Basic Concepts](https://www.elastic.co/guide/en/elasticsearch/reference/current/_basic_concepts.html)
 
 ## 6. はじめての Elasticsearch
 
@@ -145,15 +154,15 @@ Elasticsearch のデータ構造を RDBMS で表現すると...っていう書�
 
 次から実践的に Elasticsearch を使っていく．
 
-## 7. Elasticsearch でレストランを検索しよう
+## 7. Elasticsearch でレストランを検索する
 
 ### 7-1. データを落としてくる
 
 * [livedoor/datasets](https://github.com/livedoor/datasets)
 
-Livedoor 様が提供してるレストランデータを活用するので， まず任意のディレクトリにデータを落としてくる．
+Livedoor 様が提供してるレストランデータを活用するので，まず任意のディレクトリにデータを落としてくる．
 
-`.tar.gz` を展開すると複数のファイルが出てくるけど，今回は `restaurants.csv` だけを使う．約20万以上のレストランが含まれている．
+`.tar.gz` を展開すると複数のファイルが含まれているが，今回は `restaurants.csv` だけを使う．約20万以上のレストランが含まれている．
 
 ```
 ➜  github  git clone git@github.com:livedoor/datasets.git
@@ -210,9 +219,9 @@ Bulk API と cat APIs の詳細はドキュメントを見る．
 * [Bulk API](https://www.elastic.co/guide/en/elasticsearch/reference/master/docs-bulk.html)
 * [cat APIs](https://www.elastic.co/guide/en/elasticsearch/reference/master/cat.html)
 
-### 7-5. 簡単な検索をしてみよう
+### 7-5. 簡単な検索をする
 
-まず，インデックスから条件なしで検索してみましょう．デフォルトで10件抽出されます．
+まず，インデックスから条件なしで検索してみる．デフォルトで10件抽出されます．
 
 ```
 ➜  ~  curl http://localhost:9200/gourmet/restaurants/_search\?pretty -d '
@@ -224,7 +233,7 @@ Bulk API と cat APIs の詳細はドキュメントを見る．
 '
 ```
 
-次に，店名に "焼肉" と含まれているレストランを検索してみましょう．
+次に，店名に "焼肉" と含まれているレストランを検索してみる．
 
 ```
 ➜  ~  curl http://localhost:9200/gourmet/restaurants/_search\?pretty -d '
@@ -236,9 +245,7 @@ Bulk API と cat APIs の詳細はドキュメントを見る．
 '
 ```
 
-焼肉と言えば，店名に "亭" が付いてるイメージありますよね？（個人差？）
-
-`match` クエリを使って検索ボックスを使うイメージで検索してみましょう．
+焼肉と言えば，店名に "亭" が付いてるイメージあるので，`match` クエリを使って検索ボックスを使うイメージで検索してみる．
 
 ```
 ➜  ~  curl http://localhost:9200/gourmet/restaurants/_search\?pretty -d '
@@ -250,7 +257,7 @@ Bulk API と cat APIs の詳細はドキュメントを見る．
 '
 ```
 
-デフォルトだと OR 検索になるので，今度は明示的に AND 検索をしてみましょう．
+デフォルトだと OR 検索になるので，今度は明示的に AND 検索をしてみる．
 
 ```
 ➜  ~  curl http://localhost:9200/gourmet/restaurants/_search\?pretty -d '
@@ -266,7 +273,7 @@ Bulk API と cat APIs の詳細はドキュメントを見る．
 }
 ```
 
-今のままだと東京以外も検索されてしまいます．渋谷に限定してみましょう．
+今のままだと東京以外も検索されてしまう．渋谷に限定してみる．
 
 ```
 ➜  ~  curl http://localhost:9200/gourmet/restaurants/_search\?pretty -d '
@@ -282,15 +289,15 @@ Bulk API と cat APIs の詳細はドキュメントを見る．
 '
 ```
 
-### 7-6. 複雑な検索をしてみよう
+### 7-6. 複雑な検索をしてみる
 
-More Like This Query を使うとレコメンデーションのように類似するドキュメントを検索することができます．
+More Like This Query を使うとレコメンデーションのように類似するドキュメントを検索することができる．
 
-詳細は割愛しますが，ドキュメントの中にある重要語を抽出して，その重要語を同じく持つドキュメントを近似するような実装になっています．
+詳細は割愛するが，ドキュメントの中にある重要語を抽出して，その重要語を同じく持つドキュメントを近似するような実装になっている．
 
-重要語の判定は TF-IDF など昔から NLP の分野で使われている手法が実装されているはず（推測だけど）．
+重要語の判定は TF-IDF など，昔から NLP の分野で使われている手法が実装されているはず（推測だけど）．
 
-今回はマークシティ勤務なら絶対1回は買ったことがあるであろう「和幸 (id: 363297)」をベースに類似店舗を出してみましょう．
+今回はマークシティ勤務なら絶対1回は買ったことがあるであろう「和幸 (id: 363297)」をベースに類似店舗を出してみる．
 
 ```
 ➜  ~  curl http://localhost:9200/gourmet/restaurants/_search\?pretty -d '
@@ -308,7 +315,9 @@ More Like This Query を使うとレコメンデーションのように類似�
 '
 ```
 
-データセットの `description` にあまり文書が書かれてないため，驚くような結果が出ないはずです．さらに今回はあえて `address` も対象に含めてしまっているため，単純に「道玄坂」関連のレストランが出てくる可能性があります．
+データセットの `description` にあまり文書が書かれてないため，驚くような結果が出ないはず．
+
+さらに今回はあえて `address` も対象に含めてしまっているため，単純に「道玄坂」関連のレストランが出てくる可能性がある．
 
 More Like This Query の詳細はドキュメントを見る．
 
@@ -316,9 +325,9 @@ More Like This Query の詳細はドキュメントを見る．
 
 ## 8. ハイライトを実現する
 
-検索サービスだと当たり前に実装されているハイライトを試してみましょう．
+検索サービスだと当たり前に実装されているハイライトを試してみる．
 
-今まで投げてきたクエリに `highlight` セクションを追加するだけで実現できます．
+今まで投げてきたクエリに `highlight` セクションを追加するだけで実現できる．
 
 ```
 ➜  ~  curl http://localhost:9200/gourmet/restaurants/_search\?pretty -d '
@@ -341,22 +350,20 @@ More Like This Query の詳細はドキュメントを見る．
 
 ## 9. 日本語処理に関して
 
-最後に日本語処理に関して簡単に説明します．
+最後に日本語処理に関して簡単に説明する．
 
-日本語は英語と異なり単語間の区切り文字がないため，以下のような手法で文字列を分割していく必要があります．
+日本語は英語と異なり単語間の区切り文字がないため，以下のような手法で文字列を分割していく必要がある．
 
 * N-Gram
 * 形態素解析
 
-（トークナイザーとアナライザーの説明は口頭でします）
+（トークナイザーとアナライザーの説明は口頭でする）
 
 ### 9-1. N-Gram
 
-シンプルに指定された文字数で分割して転置インデックスを構成する手法です．
+シンプルに指定された文字数で分割して転置インデックスを構成する手法のこと．
 
-今回のマッピング設定では 2-Gram と 3-Gram の設定をしています．
-
-確認してみましょう．
+今回のマッピング設定では 2-Gram と 3-Gram の設定をしている．
 
 ```
 ➜  ~  curl -s http://localhost:9200/gourmet/_analyze\?tokenizer\=ngram_tokenizer\&pretty -d '東京都渋谷区で勤務しています' | grep '"token"'
@@ -389,9 +396,7 @@ More Like This Query の詳細はドキュメントを見る．
 
 ### 9-2. 形態素解析
 
-形態素解析では kuromoji を使っています．N-Gram で抽出された非実用的なフレーズが無くなります．
-
-確認してみましょう．
+形態素解析では kuromoji を使っている．N-Gram で抽出された非実用的なフレーズが無くなるが，未知語などには弱かったりもする．
 
 ```
 ➜  ~  curl -s http://localhost:9200/gourmet/_analyze\?tokenizer\=kuromoji\&pretty -d '東京都渋谷区で勤務しています' | grep '"token"'
@@ -407,7 +412,7 @@ More Like This Query の詳細はドキュメントを見る．
     "token" : "ます",
 ```
 
-さらに `kuromoji_baseform` を使うことで表記揺れの統一も意識せずインデックスすることができます．
+さらに `kuromoji_baseform` を使うことで表記揺れの統一も意識せずインデックスすることができる．
 
 ```
 ➜  ~  curl -s http://localhost:9200/gourmet/_analyze\?analyzer\=kuromoji_analyzer\&pretty -d '飲み飲む飲もう' | grep '"token"'
@@ -417,25 +422,25 @@ More Like This Query の詳細はドキュメントを見る．
     "token" : "う",
 ```
 
-実際にはもっと細かな設定をすることができます．
+実際にはもっと細かな設定をすることができる．
 
-N-Gram も形態素解析も一長一短があり，用途に応じて組み合わせて使うことがベストプラクティスなのかなと思ってます．
+N-Gram も形態素解析も一長一短があり，用途に応じて組み合わせて使うことがベストプラクティスなのかなと思う．
 
-## 10. 最後にグループワークを
+## 10. 最後にグループワークをする
 
 各自でクエリを考えてみて，明日のランチに行くお店を探してみましょう．
 
-ハンズオンの打ち上げランチ！
+テーマは「ハンズオンの打ち上げランチ」で！
 
-各自のクエリが出揃ったら発表しましょう．
+各自のクエリが出揃ったら発表する．
 
-せっかくなら `open_lunch` フィールドを使うと良いかも！
+せっかくなら `open_lunch` フィールドを使うと良いかも？
 
 ## 11. コントリビュート
 
-Elasticsearch のドキュメントを読んでいるとたまに気になるポイントが見つかったりします．
+Elasticsearch のドキュメントを読んでいるとたまに気になるポイントが見つかったりする．
 
-コードの修正ができなくても，ドキュメントの修正ならできます！僕も少し修正してみました．
+コードの修正ができなくても，ドキュメントの修正ならできる．僕も少し修正してみたことがある．
 
 * [Pull Requests · elastic/elasticsearch](https://github.com/elastic/elasticsearch/pulls?utf8=%E2%9C%93&q=author%3AKakakakakku)
 
