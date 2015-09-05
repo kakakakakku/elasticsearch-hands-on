@@ -181,8 +181,87 @@ Livedoor 様が提供してるレストランデータを活用するので， �
 （数分で実行完了になるはず）
 ```
 
-Bulk API の詳細はドキュメントを見る．
+cat count API でドキュメント数を確認する．
+
+```
+➜  ~  curl http://localhost:9200/_cat/count/gourmet\?v
+epoch      timestamp count
+1441417478 10:44:38  214236
+```
+
+Bulk API と cat APIs の詳細はドキュメントを見る．
 
 * [Bulk API](https://www.elastic.co/guide/en/elasticsearch/reference/master/docs-bulk.html)
+* [cat APIs](https://www.elastic.co/guide/en/elasticsearch/reference/master/cat.html)
 
-### 7-5. 検索してみよう
+### 7-5. 簡単な検索をしてみよう
+
+まず，インデックスから条件なしで検索してみましょう．デフォルトで10件抽出されます．
+
+```
+➜  ~  curl http://localhost:9200/gourmet/restaurants/_search\?pretty -d '
+{
+  "query": {
+    "match_all": {}
+  }
+}
+'
+```
+
+次に，店名に "焼肉" と含まれているレストランを検索してみましょう．
+
+```
+➜  ~  curl http://localhost:9200/gourmet/restaurants/_search\?pretty -d '
+{
+  "query": {
+    "match": { "name": "焼肉" }
+  }
+}
+'
+```
+
+焼肉と言えば，店名に "亭" が付いてるイメージありますよね？（個人差？）
+
+`match` クエリを使って検索ボックスを使うイメージで検索してみましょう．
+
+```
+➜  ~  curl http://localhost:9200/gourmet/restaurants/_search\?pretty -d '
+{
+  "query": {
+    "match": { "name": "焼肉 亭" }
+  }
+}
+'
+```
+
+デフォルトだと OR 検索になるので，今度は明示的に AND 検索をしてみましょう．
+
+```
+➜  ~  curl http://localhost:9200/gourmet/restaurants/_search\?pretty -d '
+{
+  "query": {
+    "match": {
+      "name": {
+        "query": "焼肉 亭 叙々苑",
+        "operator": "and"
+      }
+    }
+  }
+}
+```
+
+今のままだと東京以外も検索されてしまいます．渋谷に限定してみましょう．
+
+```
+➜  ~  curl http://localhost:9200/gourmet/restaurants/_search\?pretty -d '
+{
+  "query": {
+    "multi_match": {
+      "fields": ["name", "address"],
+      "query": "焼肉 渋谷",
+      "operator": "and"
+    }
+  }
+}
+'
+```
