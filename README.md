@@ -414,3 +414,13 @@ N-Gram も形態素解析も一長一短があり，用途に応じて組み合�
 各自のクエリが出揃ったら発表しましょう．
 
 せっかくなら `open_lunch` フィールドを使うと良いかも！
+
+## 11. コントリビュート
+
+Elasticsearch のドキュメントを読んでいるとたまに気になるポイントが見つかったりします．
+
+コードの修正ができなくても，ドキュメントの修正ならできます！僕も少し修正してみました．
+
+* [Pull Requests · elastic/elasticsearch](https://github.com/elastic/elasticsearch/pulls?utf8=%E2%9C%93&q=author%3AKakakakakku)
+
+Enjoy Elasticsearch!
