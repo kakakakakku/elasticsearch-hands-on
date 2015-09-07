@@ -199,6 +199,12 @@ Livedoor 様が提供してるレストランデータを活用するので，�
 {"acknowledged":true}%
 ```
 
+念のためマッピングを確認しておく．
+
+```
+➜  elasticsearch-hands-on git:(master) ✗ curl http://localhost:9200/gourmet/restaurants/_mapping\?pretty
+```
+
 ### 7-4. Bulk API を使ってデータを投入する
 
 ```
