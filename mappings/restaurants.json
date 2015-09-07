@@ -46,7 +46,7 @@
         }
     },
     "mappings": {
-        "restaurant": {
+        "restaurants": {
             "_source": {
                 "enabled": true
             },
