@@ -261,13 +261,15 @@ Bulk API と cat APIs の詳細はドキュメントを見る．
 '
 ```
 
-焼肉と言えば，店名に "亭" が付いてるイメージあるので，`match` クエリを使って検索ボックスを使うイメージで検索してみる．
+さらにバイキング形式の焼肉を検索してみる．
+
+ただし，これだと焼肉以外のバイキングも検索されてしまうはず．
 
 ```
 ➜  ~  curl http://localhost:9200/gourmet/restaurants/_search\?pretty -d '
 {
   "query": {
-    "match": { "name": "焼肉 亭" }
+    "match": { "name": "焼肉 バイキング" }
   }
 }
 '
@@ -281,7 +283,7 @@ Bulk API と cat APIs の詳細はドキュメントを見る．
   "query": {
     "match": {
       "name": {
-        "query": "焼肉 亭 叙々苑",
+        "query": "焼肉 バイキング",
         "operator": "and"
       }
     }
@@ -293,6 +295,8 @@ Bulk API と cat APIs の詳細はドキュメントを見る．
 ### 7-5-4. multi_match
 
 今のままだと東京以外も検索されてしまう．渋谷に限定してみる．
+
+これだと `name` と `address` の両方にキーワードが含まれている場合だけ該当してしまうので限定し過ぎている．
 
 ```
 ➜  ~  curl http://localhost:9200/gourmet/restaurants/_search\?pretty -d '
@@ -308,7 +312,28 @@ Bulk API と cat APIs の詳細はドキュメントを見る．
 '
 ```
 
-### 7-5-5. match & sort
+### 7-5-5. match & _all
+
+そこで `_all` フィールドに対して検索をしてみる．
+
+`_all` は Elasticsearch が自動的に生成した全フィールドの値を含んだ仮想的なフィールドで検索対象にできる．
+
+```
+➜  ~  curl http://localhost:9200/gourmet/restaurants/_search\?pretty -d '
+{
+  "query": {
+    "match": {
+      "_all": {
+        "query": "焼肉 渋谷",
+        "operator": "and"
+      }
+    }
+  }
+}
+'
+```
+
+### 7-5-6. match & sort
 
 今度はアクセス回数の多い順にソートして名店を探してみる．
 
@@ -329,7 +354,7 @@ Bulk API と cat APIs の詳細はドキュメントを見る．
 '
 ```
 
-### 7-5-6. more_like_this
+### 7-5-7. more_like_this
 
 More Like This Query を使うとレコメンデーションのように類似するドキュメントを検索することができる．
 
