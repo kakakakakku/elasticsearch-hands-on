@@ -221,6 +221,14 @@ Bulk API と cat APIs の詳細はドキュメントを見る．
 
 ### 7-5. 簡単な検索をする
 
+### 7-5-1. elasticsearch-inquisitor
+
+基本的に curl を使った手順に統一して書いていますが，既にインストール済の elasticsearch-inquisitor を使うこともできます．その場合は以下の URL にアクセスするだけで使えます．
+
+>http://localhost:9200/_plugin/inquisitor/#/
+
+### 7-5-2. クエリを投げる
+
 まず，インデックスから条件なしで検索してみる．デフォルトで10件抽出されます．
 
 ```
@@ -271,6 +279,7 @@ Bulk API と cat APIs の詳細はドキュメントを見る．
     }
   }
 }
+'
 ```
 
 今のままだと東京以外も検索されてしまう．渋谷に限定してみる．
@@ -298,6 +307,12 @@ More Like This Query を使うとレコメンデーションのように類似�
 重要語の判定は TF-IDF など，昔から NLP の分野で使われている手法が実装されているはず（推測だけど）．
 
 今回はマークシティ勤務なら絶対1回は買ったことがあるであろう「和幸 (id: 363297)」をベースに類似店舗を出してみる．
+
+```
+➜  ~  curl http://localhost:9200/gourmet/restaurants/363297\?pretty
+```
+
+More Like This Query を投げる．
 
 ```
 ➜  ~  curl http://localhost:9200/gourmet/restaurants/_search\?pretty -d '
