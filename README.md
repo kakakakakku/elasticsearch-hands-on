@@ -233,9 +233,9 @@ Bulk API と cat APIs の詳細はドキュメントを見る．
 
 >http://localhost:9200/_plugin/inquisitor/#/
 
-### 7-5-2. クエリを投げる
+### 7-5-2. match_all
 
-まず，インデックスから条件なしで検索してみる．デフォルトで10件抽出されます．
+まず，インデックスから条件なしで検索してみる．デフォルトで10件抽出される．
 
 ```
 ➜  ~  curl http://localhost:9200/gourmet/restaurants/_search\?pretty -d '
@@ -246,6 +246,8 @@ Bulk API と cat APIs の詳細はドキュメントを見る．
 }
 '
 ```
+
+### 7-5-3. match
 
 次に，店名に "焼肉" と含まれているレストランを検索してみる．
 
@@ -288,6 +290,8 @@ Bulk API と cat APIs の詳細はドキュメントを見る．
 '
 ```
 
+### 7-5-4. multi_match
+
 今のままだと東京以外も検索されてしまう．渋谷に限定してみる．
 
 ```
@@ -304,7 +308,28 @@ Bulk API と cat APIs の詳細はドキュメントを見る．
 '
 ```
 
-### 7-6. 複雑な検索をしてみる
+### 7-5-5. match & sort
+
+今度はアクセス回数の多い順にソートして名店を探してみる．
+
+```
+➜  ~  curl http://localhost:9200/gourmet/restaurants/_search\?pretty -d '
+{
+  "query": {
+    "match": {
+      "name": "焼肉"
+    }
+  },
+  "sort": [
+    {
+      "access_count": "desc"
+    }
+  ]
+}
+'
+```
+
+### 7-5-6. more_like_this
 
 More Like This Query を使うとレコメンデーションのように類似するドキュメントを検索することができる．
 
