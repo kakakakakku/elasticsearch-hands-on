@@ -454,10 +454,11 @@ Query はスコアリングに影響する検索のために使うもので，�
 ➜  ~  curl http://localhost:9200/gourmet/restaurants/_search\?pretty -d '
 {
   "query": {
-    "multi_match": {
-      "fields": ["name", "address"],
-      "query": "焼肉 渋谷",
-      "operator": "and"
+    "match": {
+      "name": {
+        "query": "焼肉 バイキング",
+        "operator": "and"
+      }
     }
   },
   "highlight": {
