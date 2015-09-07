@@ -225,7 +225,7 @@ Bulk API と cat APIs の詳細はドキュメントを見る．
 * [Bulk API](https://www.elastic.co/guide/en/elasticsearch/reference/master/docs-bulk.html)
 * [cat APIs](https://www.elastic.co/guide/en/elasticsearch/reference/master/cat.html)
 
-### 7-5. 簡単な検索をする
+### 7-5. 検索する
 
 ### 7-5-1. elasticsearch-inquisitor
 
@@ -233,7 +233,7 @@ Bulk API と cat APIs の詳細はドキュメントを見る．
 
 >http://localhost:9200/_plugin/inquisitor/#/
 
-### 7-5-2. match_all
+### 7-5-2. Match All Query
 
 まず，インデックスから条件なしで検索してみる．デフォルトで10件抽出される．
 
@@ -247,7 +247,9 @@ Bulk API と cat APIs の詳細はドキュメントを見る．
 '
 ```
 
-### 7-5-3. match
+* [Match All Query](https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-match-all-query.html)
+
+### 7-5-3. Match Query
 
 次に，店名に "焼肉" と含まれているレストランを検索してみる．
 
@@ -292,7 +294,9 @@ Bulk API と cat APIs の詳細はドキュメントを見る．
 '
 ```
 
-### 7-5-4. multi_match
+* [Match Query](https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-match-query.html)
+
+### 7-5-4. Multi Match Query
 
 今のままだと東京以外も検索されてしまう．渋谷に限定してみる．
 
@@ -312,7 +316,9 @@ Bulk API と cat APIs の詳細はドキュメントを見る．
 '
 ```
 
-### 7-5-5. match & _all
+* [Multi Match Query](https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-multi-match-query.html)
+
+### 7-5-5. Match Query & _all field
 
 そこで `_all` フィールドに対して検索をしてみる．
 
@@ -333,9 +339,9 @@ Bulk API と cat APIs の詳細はドキュメントを見る．
 '
 ```
 
-### 7-5-6. match & sort
+### 7-5-6. Match Query & Sorting
 
-今度はアクセス回数の多い順にソートして名店を探してみる．
+今度はアクセス回数の多い順にソートして人気のレストランを検索する．
 
 ```
 ➜  ~  curl http://localhost:9200/gourmet/restaurants/_search\?pretty -d '
@@ -354,7 +360,7 @@ Bulk API と cat APIs の詳細はドキュメントを見る．
 '
 ```
 
-### 7-5-7. more_like_this
+### 7-5-7. More Like This Query
 
 More Like This Query を使うとレコメンデーションのように類似するドキュメントを検索することができる．
 
@@ -390,11 +396,49 @@ More Like This Query を投げる．
 
 さらに今回はあえて `address` も対象に含めてしまっているため，単純に「道玄坂」関連のレストランが出てくる可能性がある．
 
-More Like This Query の詳細はドキュメントを見る．
-
 * [More Like This Query](https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-mlt-query.html)
 
-## 8. ハイライトを実現する
+### 7-5-8. Term Filter
+
+ここで始めて Filter を使ってみる．
+
+例としてカテゴリ一覧から以下のカテゴリコードをサンプリングした．
+
+```
+➜  datasets git:(master) ✗ egrep '320|326' categories.csv
+320,"豚骨ラーメン","とんこつらーめん",800,0,
+326,"博多ラーメン","はかたらーめん",800,0,
+```
+
+カテゴリコードに該当するレストランをアクセス回数の多い順にソートして検索する．
+
+```
+➜  ~  curl http://localhost:9200/gourmet/restaurants/_search\?pretty -d '
+{
+  "filter": {
+    "term": {
+      "category_id1": ["320", "326"]
+    }
+  },
+  "sort": [
+    {
+      "access_count": "desc"
+    }
+  ]
+}
+`
+```
+
+* [Term Filter](https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-term-filter.html)
+
+## 8. Query と Filter
+
+今までは全て Query を使ってきたけど，Elasticsearch では Query と Filter で大きく意味が違う．
+
+* [Queries](https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-queries.html)
+* [Filters](https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-filters.html)
+
+## 9. ハイライトを実現する
 
 検索サービスだと当たり前に実装されているハイライトを試してみる．
 
@@ -419,7 +463,7 @@ More Like This Query の詳細はドキュメントを見る．
 '
 ```
 
-## 9. 日本語処理に関して
+## 10. 日本語処理に関して
 
 最後に日本語処理に関して簡単に説明する．
 
@@ -430,7 +474,7 @@ More Like This Query の詳細はドキュメントを見る．
 
 （トークナイザーとアナライザーの説明は口頭でする）
 
-### 9-1. N-Gram
+### 10-1. N-Gram
 
 シンプルに指定された文字数で分割して転置インデックスを構成する手法のこと．
 
@@ -465,7 +509,7 @@ More Like This Query の詳細はドキュメントを見る．
     "token" : "ます",
 ```
 
-### 9-2. 形態素解析
+### 10-2. 形態素解析
 
 形態素解析では kuromoji を使っている．N-Gram で抽出された非実用的なフレーズが無くなるが，未知語などには弱かったりもする．
 
@@ -497,7 +541,7 @@ More Like This Query の詳細はドキュメントを見る．
 
 N-Gram も形態素解析も一長一短があり，用途に応じて組み合わせて使うことがベストプラクティスなのかなと思う．
 
-## 10. 最後にグループワークをする
+## 11. 最後にグループワークをする
 
 各自でクエリを考えてみて，明日のランチに行くお店を探してみましょう．
 
@@ -507,7 +551,7 @@ N-Gram も形態素解析も一長一短があり，用途に応じて組み合�
 
 せっかくなら `open_lunch` フィールドを使うと良いかも？
 
-## 11. コントリビュート
+## 12. コントリビュート
 
 Elasticsearch のドキュメントを読んでいるとたまに気になるポイントが見つかったりする．
 
