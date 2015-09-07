@@ -435,6 +435,12 @@ More Like This Query を投げる．
 
 今までは全て Query を使ってきたけど，Elasticsearch では Query と Filter で大きく意味が違う．
 
+Query はスコアリングに影響する検索のために使うもので，全部検索や関連度に応じて抽出するようなクエリで利用する．
+
+それと比較して Filter はスコアリングに影響せず，シンプルに条件に合致するかだけで抽出するようなクエリで利用する．またキャッシュすることもでき，検索結果は Query と比較すると非常に高速になる．
+
+また Query と Filter は併用することもできるため，うまくチューニングをしていく必要がある．
+
 * [Queries](https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-queries.html)
 * [Filters](https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-filters.html)
 
