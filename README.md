@@ -62,11 +62,29 @@ Version: 1.7.1, Build: b88f43f/2015-07-29T09:54:16Z, JVM: 1.8.0_20
 http.max_content_length: 200mb
 ```
 
+### 4-3. 自動クラスタ構成の設定を OFF にする
+
+`/usr/local/Cellar/elasticsearch/1.7.1/config/elasticsearch.yml` に定義されている `discovery.zen.ping.multicast.enabled` を OFF にする．
+
+Elasticsearch 1.7 ではデフォルトでマルチキャストを使った自動クラスタ構成が ON になっているため，同じクラスタ名で，同じネットワーク上に存在するノードは自動的にクラスタに取り組まれてしまう．
+
+* Before
+
+```
+#discovery.zen.ping.multicast.enabled: false
+```
+
+* After
+
+```
+discovery.zen.ping.multicast.enabled: false
+```
+
 設定の詳細はドキュメントを見る．
 
-* [HTTP](https://www.elastic.co/guide/en/elasticsearch/reference/master/modules-http.html)
+* [Zen Discovery](https://www.elastic.co/guide/en/elasticsearch/reference/current/modules-discovery-zen.html)
 
-### 4-3. 主要なプラグインをインストールする
+### 4-4. 主要なプラグインをインストールする
 
 Elasticsearch のインストールと同時に `plugin` コマンドが使えるようになっている．
 
@@ -97,7 +115,7 @@ Installed plugins:
 
 * [Plugins](https://www.elastic.co/guide/en/elasticsearch/reference/current/modules-plugins.html)
 
-### 4-4. 起動してみる
+### 4-5. 起動してみる
 
 簡単に起動できる．
 
