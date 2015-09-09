@@ -410,7 +410,7 @@ More Like This Query を投げる．
       "ids": ["363297"],
       "min_term_freq": 1,
       "min_doc_freq": 10,
-      "minimum_should_match": "70%"
+      "minimum_should_match": "40%"
     }
   }
 }
