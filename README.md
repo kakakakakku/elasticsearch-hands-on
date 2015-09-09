@@ -117,10 +117,10 @@ Installed plugins:
 
 ### 4-5. 起動してみる
 
-簡単に起動できる．
+簡単に起動できる（今回は念のためヒープサイズを更新しておく）．
 
 ```
-➜  ~  elasticsearch
+➜  ~  elasticsearch -Xmx5g -Xms5g
 （中略）
 [INFO ][node                     ] [Hellion] starting ...
 （中略）
