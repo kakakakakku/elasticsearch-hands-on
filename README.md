@@ -451,7 +451,7 @@ More Like This Query を投げる．
     }
   ]
 }
-`
+'
 ```
 
 * [Term Filter](https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-term-filter.html)
