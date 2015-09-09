@@ -343,6 +343,10 @@ Bulk API と cat APIs の詳細はドキュメントを見る．
 '
 ```
 
+ちなみに，このクエリの評価は少しややこしく，ドキュメントの `operator and minimum_should_match` の内容を理解しておく必要がある．
+
+今回の例で言うと，レストラン名に「渋谷」と「焼肉」が両方含まれていて，住所に「渋谷」が含まれているドキュメントがヒットすることとなる．
+
 * [Multi Match Query](https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-multi-match-query.html)
 
 ### 7-5-5. Match Query & _all field
