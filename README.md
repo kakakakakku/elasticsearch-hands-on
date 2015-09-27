@@ -25,7 +25,6 @@ Elasticsearch 最高！と思えるキッカケ作りの場になれば良いな
 逆に以下の内容は今回は対象外とする（次回？）．
 
 * JOIN
-* ファセット
 * Fluentd 連携
 * Kibana 連携
 
@@ -461,6 +460,33 @@ More Like This Query を投げる．
 ```
 
 * [Term Filter](https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-term-filter.html)
+
+### 7-5-9. Terms Aggregation
+
+次にアグリゲーションを試す．
+
+今回はレストランの `category_id1` ごとにレストラン数を集計する．なお，デフォルトではレストラン数の上位10件しか出ないため `terms` の中で `size` を宣言する必要がある．また `size = 0` にすると全件取得できるようになる．
+
+```
+➜  ~  curl http://localhost:9200/gourmet/restaurants/_search\?search_type\=count\&pretty -d '
+{
+  "query" : {
+    "match_all": {}
+  },
+  "aggregations": {
+    "count_category_id1": {
+      "terms": {
+        "size": 20,
+        "field": "category_id1"
+      }
+    }
+  }
+}
+'
+```
+
+* [Aggregations](https://www.elastic.co/guide/en/elasticsearch/reference/current/search-aggregations.html)
+* [Terms Aggregation](https://www.elastic.co/guide/en/elasticsearch/reference/current/search-aggregations-bucket-terms-aggregation.html)
 
 ## 8. Query と Filter
 
